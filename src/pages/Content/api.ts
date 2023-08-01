@@ -35,11 +35,3 @@ export async function deleteContent(params: Pick<ContentListItem, 'id'>) {
     method: 'DELETE',
   });
 }
-
-export async function pushOnce({ id }: Pick<ContentListItem, 'id'>) {
-  return request<{
-    records: ContentListItem[];
-  }>(`/contents/${id}/actions/push`, {
-    method: 'POST',
-  });
-}

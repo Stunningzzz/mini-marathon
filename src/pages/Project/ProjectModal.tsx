@@ -16,26 +16,26 @@ import dayjs from 'dayjs';
 import { observer } from 'mobx-react-lite';
 import Cron, { CronFns } from 'qnn-react-cron';
 import { FC, useEffect, useRef } from 'react';
-import { addContent, updateContent } from './api';
-import { ContentListItem } from './types';
+import { addProject, updateProject } from './api';
+import { IProjectItem } from './types';
 
 //私有常量
 
-export enum ContentModalState {
+export enum ProjectModalState {
   EDIT = '编辑',
   ADD = '新建',
   CLOSE = '关闭',
 }
 
-export const defaultContent: Partial<ContentListItem> = {
-  containMotto: true,
-  containWeather: true,
-  briefing: '',
-  contentName: '',
-  enterpriseWeChatHookKeys: [''],
-  scheduleType: 0,
-  scheduledPushTime: Date.now(),
-  scheduledPushCron: '? ? ? ? * ? ?',
+export const defaultProject: Partial<IProjectItem> = {
+  // containMotto: true,
+  // containWeather: true,
+  // briefing: '',
+  // contentName: '',
+  // enterpriseWeChatHookKeys: [''],
+  // scheduleType: 0,
+  // scheduledPushTime: Date.now(),
+  // scheduledPushCron: '? ? ? ? * ? ?',
 };
 
 const CronComponent: FC<Partial<Cron.CronProps>> = Cron as any;
@@ -54,14 +54,14 @@ const formItemLayoutWithOutLabel = {
 
 //可抽离的逻辑处理函数/组件
 
-let ContentModal = (props: IProps) => {
+let ProjectModal = (props: IProps) => {
   //变量声明、解构
   const { modalFormData, modalState, onCancel, reload } = props;
   //组件状态
-  const [form] = Form.useForm<ContentListItem>();
+  const [form] = Form.useForm<IProjectItem>();
   const fnRef = useRef<CronFns>();
   //网络IO
-  const { runAsync: runUpdateContent, loading: updateLoading } = useRequest(updateContent, {
+  const { runAsync: runUpdateProject, loading: updateLoading } = useRequest(updateProject, {
     manual: true,
     onSuccess() {
       message.success('编辑成功');
@@ -69,7 +69,7 @@ let ContentModal = (props: IProps) => {
       reload();
     },
   });
-  const { runAsync: runAddContent, loading: addLoading } = useRequest(addContent, {
+  const { runAsync: runAddProject, loading: addLoading } = useRequest(addProject, {
     manual: true,
     onSuccess() {
       message.success('新建成功');
@@ -99,7 +99,7 @@ let ContentModal = (props: IProps) => {
     <Modal
       title={`${modalState}内容`}
       width="800px"
-      open={modalState !== ContentModalState.CLOSE}
+      open={modalState !== ProjectModalState.CLOSE}
       onCancel={onCancel}
       confirmLoading={updateLoading || addLoading}
       onOk={form.submit}
@@ -110,10 +110,10 @@ let ContentModal = (props: IProps) => {
         labelCol={{ span: 8 }}
         form={form}
         onFinish={(data) => {
-          if (modalState === ContentModalState.ADD) {
-            runAddContent({ ...modalFormData, ...data });
+          if (modalState === ProjectModalState.ADD) {
+            runAddProject({ ...modalFormData, ...data });
           } else {
-            runUpdateContent({ ...modalFormData, ...data });
+            runUpdateProject({ ...modalFormData, ...data });
           }
         }}
       >
@@ -147,7 +147,7 @@ let ContentModal = (props: IProps) => {
           {(form) => {
             const scheduleType = form.getFieldValue('scheduleType');
             const cronValue = form.getFieldValue('scheduledPushCron');
-            const setCronValue = (value = defaultContent.scheduledPushCron) => {
+            const setCronValue = (value = defaultProject.scheduledPushCron) => {
               console.log('set', value);
               form.setFieldValue('scheduledPushCron', value);
             };
@@ -176,7 +176,7 @@ let ContentModal = (props: IProps) => {
                       getCronFns={(data) => (fnRef.current = data)}
                       footer={
                         <Space>
-                          <Button onClick={() => setCronValue(defaultContent.scheduledPushCron)}>
+                          <Button onClick={() => setCronValue(defaultProject.scheduledPushCron)}>
                             重置
                           </Button>
                         </Space>
@@ -276,12 +276,12 @@ let ContentModal = (props: IProps) => {
 
 //props类型定义
 interface IProps {
-  modalFormData: Partial<ContentListItem>;
-  modalState: ContentModalState;
+  modalFormData: Partial<IProjectItem>;
+  modalState: ProjectModalState;
   onCancel: () => void;
   reload: () => void;
 }
 
 //prop-type定义，可选
-ContentModal = observer(ContentModal);
-export { ContentModal as default };
+ProjectModal = observer(ProjectModal);
+export { ProjectModal as default };

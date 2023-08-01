@@ -18,13 +18,13 @@ export default [
     component: './Login',
   },
   {
-    name: '项目管理',
+    name: 'project',
     icon: 'table',
     path: '/project',
     component: './Project',
   },
   {
-    name: '内容管理',
+    name: 'content',
     icon: 'table',
     path: '/content',
     component: './Content',
