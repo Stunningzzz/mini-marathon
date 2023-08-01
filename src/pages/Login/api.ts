@@ -9,22 +9,17 @@ export function getCurrentUser() {
 }
 
 /** 退出登录接口 POST /api/login/outLogin */
-export async function outLogin() {
-  await request<Record<string, any>>('/login/outLogin', {
-    method: 'POST',
-  });
+export async function logout() {
   localStorage.setItem('user', '');
 }
 
 /** 登录接口 POST /api/login/account */
-export async function login(body: API.LoginParams) {
-  const res = await request<API.LoginResult>('/login/account', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: body,
-  });
+export async function login(body: API.LoginParams): Promise<API.LoginResult> {
+  await new Promise((resolve) => setTimeout(resolve, 500));
   localStorage.setItem('user', JSON.stringify({ name: body.username }));
-  return res;
+  return {
+    status: 'ok',
+    currentAuthority: 'admin',
+    type: 'admin',
+  };
 }
