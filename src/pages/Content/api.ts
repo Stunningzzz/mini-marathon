@@ -16,10 +16,10 @@ export async function listContent(params: {
   return res.records;
 }
 
-export async function updateContent(params: ContentListItem) {
-  return request(`/contents/${params.id}`, {
+export async function updateContent({ id, ...rest }: ContentListItem) {
+  return request(`/contents/${id}`, {
     method: 'PUT',
-    data: params,
+    data: rest,
   });
 }
 

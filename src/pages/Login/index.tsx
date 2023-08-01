@@ -1,8 +1,9 @@
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import {
   AlipayCircleOutlined,
   LockOutlined,
-  MobileOutlined,
+  // MobileOutlined,
   TaobaoCircleOutlined,
   UserOutlined,
   WeiboCircleOutlined,
@@ -20,29 +21,29 @@ import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import { getCurrentUser, login } from './api';
 
-const ActionIcons = () => {
-  const langClassName = useEmotionCss(({ token }) => {
-    return {
-      marginLeft: '8px',
-      color: 'rgba(0, 0, 0, 0.2)',
-      fontSize: '24px',
-      verticalAlign: 'middle',
-      cursor: 'pointer',
-      transition: 'color 0.3s',
-      '&:hover': {
-        color: token.colorPrimaryActive,
-      },
-    };
-  });
+// const ActionIcons = () => {
+//   const langClassName = useEmotionCss(({ token }) => {
+//     return {
+//       marginLeft: '8px',
+//       color: 'rgba(0, 0, 0, 0.2)',
+//       fontSize: '24px',
+//       verticalAlign: 'middle',
+//       cursor: 'pointer',
+//       transition: 'color 0.3s',
+//       '&:hover': {
+//         color: token.colorPrimaryActive,
+//       },
+//     };
+//   });
 
-  return (
-    <>
-      <AlipayCircleOutlined key="AlipayCircleOutlined" className={langClassName} />
-      <TaobaoCircleOutlined key="TaobaoCircleOutlined" className={langClassName} />
-      <WeiboCircleOutlined key="WeiboCircleOutlined" className={langClassName} />
-    </>
-  );
-};
+//   return (
+//     <>
+//       <AlipayCircleOutlined key="AlipayCircleOutlined" className={langClassName} />
+//       <TaobaoCircleOutlined key="TaobaoCircleOutlined" className={langClassName} />
+//       <WeiboCircleOutlined key="WeiboCircleOutlined" className={langClassName} />
+//     </>
+//   );
+// };
 
 const LoginMessage: React.FC<{
   content: string;
@@ -100,12 +101,10 @@ const Login: React.FC = () => {
         history.push(urlParams.get('redirect') || '/');
         return;
       }
-      console.log(msg);
       // 如果失败去设置用户错误信息
       setUserLoginState(msg);
     } catch (error) {
       const defaultLoginFailureMessage = '登录失败，请重试！';
-      console.log(error);
       message.error(defaultLoginFailureMessage);
     }
   };

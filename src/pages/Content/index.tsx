@@ -1,5 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
+import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { Link } from '@umijs/max';
 import { Button, Popconfirm, Tag, message } from 'antd';
 import { observer } from 'mobx-react-lite';
@@ -44,9 +44,22 @@ let Content = (props: IProps) => {
   console.log({ data });
   const { runAsync: runDeleteContent, loading: deleteLoading } = useRequest(deleteContent, {
     manual: true,
-    onSuccess(data, params) {
+    onSuccess() {
       message.success('删除成功');
       reload();
+    },
+  });
+
+  console.log('deleteLoading :>> ', deleteLoading);
+
+  const {
+    runAsync: runPushOnce,
+    loading: pushLoading,
+    params,
+  } = useRequest(pushOnce, {
+    manual: true,
+    onSuccess() {
+      message.success('推送成功');
     },
   });
 
@@ -90,13 +103,13 @@ let Content = (props: IProps) => {
           },
           {
             title: '天气',
-            render(dom, entity, index, action, schema) {
+            render(dom, entity) {
               return <IncludeTag isInclude={entity.containWeather} />;
             },
           },
           {
             title: '格言',
-            render(dom, entity, index, action, schema) {
+            render(dom, entity) {
               return <IncludeTag isInclude={entity.containMotto} />;
             },
           },
@@ -114,6 +127,7 @@ let Content = (props: IProps) => {
             title: '操作',
             render: (_, record) => [
               <Button
+                key={123}
                 type="link"
                 onClick={() => {
                   setModalState(ContentModalState.EDIT);
@@ -122,7 +136,18 @@ let Content = (props: IProps) => {
               >
                 编辑
               </Button>,
+              <Button
+                key={312}
+                type="link"
+                loading={pushLoading && params[0]?.id === record.id}
+                onClick={() => {
+                  runPushOnce({ id: record.id });
+                }}
+              >
+                推送一次
+              </Button>,
               <Popconfirm
+                key={897}
                 title={`确认删除【${record.id}】吗？`}
                 onConfirm={() => runDeleteContent({ id: record.id })}
               >
@@ -139,7 +164,9 @@ let Content = (props: IProps) => {
 };
 
 //props类型定义
-interface IProps {}
+interface IProps {
+  demo?: any;
+}
 
 //prop-type定义，可选
 Content = observer(Content);

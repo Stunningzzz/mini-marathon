@@ -35,7 +35,7 @@ export const defaultContent: Partial<ContentListItem> = {
   enterpriseWeChatHookKeys: [''],
   scheduleType: 0,
   scheduledPushTime: Date.now(),
-  scheduledPushCron: '? ? ? ? * ? ?',
+  scheduledPushCron: '0/10 * * * * ?',
 };
 
 const CronComponent: FC<Partial<Cron.CronProps>> = Cron as any;
@@ -148,45 +148,49 @@ let ContentModal = (props: IProps) => {
             const scheduleType = form.getFieldValue('scheduleType');
             const cronValue = form.getFieldValue('scheduledPushCron');
             const setCronValue = (value = defaultContent.scheduledPushCron) => {
-              console.log('set', value);
               form.setFieldValue('scheduledPushCron', value);
             };
-            console.log({ cronValue });
-            return scheduleType === 0 ? (
-              <Form.Item
-                label="推送时间"
-                name="scheduledPushTime"
-                getValueProps={(num) => {
-                  return { value: dayjs(num) };
-                }}
-                normalize={(dayjsInstance) => dayjsInstance.valueOf()}
-              >
-                <DatePicker showTime />
-              </Form.Item>
-            ) : (
-              <Form.Item label="推送设置" name="scheduledPushCron">
-                <Space direction="vertical">
-                  {cronValue}
-                  <div
-                    onChange={(e) => e.stopPropagation()}
-                    onClick={() => runSetCron()}
-                    onInput={() => runSetCron()}
-                  >
-                    <CronComponent
-                      getCronFns={(data) => (fnRef.current = data)}
-                      footer={
-                        <Space>
-                          <Button onClick={() => setCronValue(defaultContent.scheduledPushCron)}>
-                            重置
-                          </Button>
-                        </Space>
-                      }
-                      value={cronValue}
-                    />
-                  </div>
-                </Space>
-              </Form.Item>
-            );
+            return {
+              0: (
+                <Form.Item
+                  label="推送时间"
+                  name="scheduledPushTime"
+                  getValueProps={(num) => {
+                    return { value: num === null ? num : dayjs(num) };
+                  }}
+                  normalize={(dayjsInstance) => {
+                    return dayjsInstance === null ? dayjsInstance : dayjsInstance.valueOf();
+                  }}
+                >
+                  <DatePicker showTime />
+                </Form.Item>
+              ),
+              1: (
+                <Form.Item label="推送设置" name="scheduledPushCron">
+                  <Space direction="vertical">
+                    {cronValue}
+                    <div
+                      onChange={(e) => e.stopPropagation()}
+                      onClick={() => runSetCron()}
+                      onInput={() => runSetCron()}
+                    >
+                      <CronComponent
+                        getCronFns={(data) => (fnRef.current = data)}
+                        footer={
+                          <Space>
+                            <Button onClick={() => setCronValue(defaultContent.scheduledPushCron)}>
+                              重置
+                            </Button>
+                          </Space>
+                        }
+                        value={cronValue}
+                      />
+                    </div>
+                  </Space>
+                </Form.Item>
+              ),
+              2: null,
+            }[scheduleType as number];
           }}
         </Form.Item>
 

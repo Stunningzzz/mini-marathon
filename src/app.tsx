@@ -43,7 +43,7 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
-    actionsRender: () => [<div />],
+    actionsRender: () => [<div key={123} />],
     avatarProps: {
       src: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
       title: <AvatarName />,
@@ -98,7 +98,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
  */
 export const request: RequestConfig = {
   // /api 访问本地 mock 接口
-  // baseURL: '/api',
+  //   baseURL: '/api',
   baseURL: 'http://192.168.43.54:8080/',
   withCredentials: true,
 

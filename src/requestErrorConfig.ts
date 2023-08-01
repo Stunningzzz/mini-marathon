@@ -1,6 +1,6 @@
 ﻿import type { RequestOptions } from '@@/plugin-request/request';
 import type { RequestConfig } from '@umijs/max';
-import { message, notification, theme } from 'antd';
+import { notification } from 'antd';
 
 // 与后端约定的响应数据格式
 interface ResponseStructure {
@@ -20,11 +20,11 @@ export const errorConfig: RequestConfig = {
   errorConfig: {
     // 错误接收及处理
     errorHandler: (error: any) => {
-      console.log({ error });
+      const err = error.response.data;
       notification.open({
         type: 'error',
-        description: error.desc,
-        message: error.desc,
+        description: err.desc,
+        message: `错误码：${err.code}`,
       });
     },
   },

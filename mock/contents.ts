@@ -17,22 +17,33 @@ export default {
       success: true,
       code: 200,
       desc: '这是一段描述',
-      data: [
-        {
-          briefing: '这是简报',
-          containMotto: false,
-          containWeather: true,
-          createTime: Date.now(),
-          enterpriseWeChatHookKeys: ['aaa', 'bbb'],
-          id: '1',
-          modifyTime: Date.now(),
-          name: 'aa',
-          projectId: '1',
-          scheduleType: 1,
-          scheduledPushCron: '0,1,2 0,1,2 ? ? * ? ?',
-          scheduledPushTime: Date.now(),
-        },
-      ],
+      data: {
+        records: [
+          {
+            briefing: '这是简报',
+            containMotto: false,
+            containWeather: true,
+            createTime: Date.now(),
+            enterpriseWeChatHookKeys: ['aaa', 'bbb'],
+            id: '1',
+            modifyTime: Date.now(),
+            name: 'aa',
+            projectId: '1',
+            scheduleType: 1,
+            scheduledPushCron: '0,1,2 0,1,2 ? ? * ? ?',
+            scheduledPushTime: Date.now(),
+          },
+        ],
+      },
+    });
+  },
+  'POST /api/contents/:contentId/actions/push': async (req: Request, res: Response) => {
+    await waitTime(1000);
+    res.send({
+      success: false,
+      code: 200,
+      desc: '这是一段描述',
+      data: null,
     });
   },
   'DELETE /api/contents/:contentId': async (req: Request, res: Response) => {
@@ -46,7 +57,6 @@ export default {
   },
   'POST /api/contents': async (req: Request, res: Response) => {
     await waitTime(1000);
-    console.log(req.body);
     res.send({
       success: true,
       code: 200,
@@ -56,7 +66,6 @@ export default {
   },
   'PUT /api/contents/:contentId': async (req: Request, res: Response) => {
     await waitTime(1000);
-    console.log('修改', req.params, req.body);
     res.send({
       success: true,
       code: 200,
