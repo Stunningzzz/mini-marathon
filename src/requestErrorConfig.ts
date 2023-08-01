@@ -24,7 +24,7 @@ export const errorConfig: RequestConfig = {
       notification.open({
         type: 'error',
         description: error.desc,
-        message: error.desc,
+        message: `错误码：${error.code}`,
       });
     },
   },

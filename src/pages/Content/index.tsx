@@ -4,7 +4,7 @@ import { Link } from '@umijs/max';
 import { Button, Popconfirm, Tag, message } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { ContentListItem } from './types';
-import { deleteContent, listContent } from './api';
+import { deleteContent, listContent, pushOnce } from './api';
 import { useRequest } from 'ahooks';
 import ContentModal, { ContentModalState, defaultContent } from './ContentModal';
 import { useState } from 'react';
@@ -41,12 +41,18 @@ let Content = (props: IProps) => {
     loading: listLoading,
     refreshAsync: reload,
   } = useRequest(listContent, { manual: false });
-  console.log({ data });
-  const { runAsync: runDeleteContent, loading: deleteLoading } = useRequest(deleteContent, {
+  const { runAsync: runDeleteContent } = useRequest(deleteContent, {
     manual: true,
-    onSuccess(data, params) {
+    onSuccess() {
       message.success('删除成功');
       reload();
+    },
+  });
+
+  const { runAsync: runPushOnce, loading: pushLoading } = useRequest(pushOnce, {
+    manual: true,
+    onSuccess() {
+      message.success('推送成功');
     },
   });
 
@@ -122,8 +128,17 @@ let Content = (props: IProps) => {
               >
                 编辑
               </Button>,
+              <Button
+                type="link"
+                loading={pushLoading}
+                onClick={() => {
+                  runPushOnce({ id: record.id });
+                }}
+              >
+                推送一次
+              </Button>,
               <Popconfirm
-                title={`确认删除【${record.id}】吗？`}
+                title={`确认删除【${record.contentName}】吗？`}
                 onConfirm={() => runDeleteContent({ id: record.id })}
               >
                 <Button type="link" danger>
