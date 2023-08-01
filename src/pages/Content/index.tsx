@@ -49,7 +49,11 @@ let Content = (props: IProps) => {
     },
   });
 
-  const { runAsync: runPushOnce, loading: pushLoading } = useRequest(pushOnce, {
+  const {
+    runAsync: runPushOnce,
+    loading: pushLoading,
+    params,
+  } = useRequest(pushOnce, {
     manual: true,
     onSuccess() {
       message.success('推送成功');
@@ -130,7 +134,7 @@ let Content = (props: IProps) => {
               </Button>,
               <Button
                 type="link"
-                loading={pushLoading}
+                loading={pushLoading && params[0]?.id === record.id}
                 onClick={() => {
                   runPushOnce({ id: record.id });
                 }}

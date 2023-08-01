@@ -39,7 +39,6 @@ export default {
   },
   'POST /api/contents/:contentId/actions/push': async (req: Request, res: Response) => {
     await waitTime(1000);
-    console.log({ params: req.params });
     res.send({
       success: false,
       code: 200,
@@ -58,7 +57,6 @@ export default {
   },
   'POST /api/contents': async (req: Request, res: Response) => {
     await waitTime(1000);
-    console.log(req.body);
     res.send({
       success: true,
       code: 200,
@@ -68,7 +66,6 @@ export default {
   },
   'PUT /api/contents/:contentId': async (req: Request, res: Response) => {
     await waitTime(1000);
-    console.log('修改', req.params, req.body);
     res.send({
       success: true,
       code: 200,

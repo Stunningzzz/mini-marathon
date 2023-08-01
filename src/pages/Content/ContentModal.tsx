@@ -35,7 +35,7 @@ export const defaultContent: Partial<ContentListItem> = {
   enterpriseWeChatHookKeys: [''],
   scheduleType: 2,
   scheduledPushTime: Date.now(),
-  scheduledPushCron: '? ? ? ? * ? ?',
+  scheduledPushCron: '0/10 * * * * ?',
 };
 
 const CronComponent: FC<Partial<Cron.CronProps>> = Cron as any;
@@ -152,19 +152,19 @@ let ContentModal = (props: IProps) => {
             const scheduleType = form.getFieldValue('scheduleType');
             const cronValue = form.getFieldValue('scheduledPushCron');
             const setCronValue = (value = defaultContent.scheduledPushCron) => {
-              console.log('set', value);
               form.setFieldValue('scheduledPushCron', value);
             };
-            console.log({ cronValue });
             return {
               0: (
                 <Form.Item
                   label="推送时间"
                   name="scheduledPushTime"
                   getValueProps={(num) => {
-                    return { value: dayjs(num) };
+                    return { value: num == null ? num : dayjs(num) };
                   }}
-                  normalize={(dayjsInstance) => dayjsInstance.valueOf()}
+                  normalize={(dayjsInstance) => {
+                    return dayjsInstance == null ? dayjsInstance : dayjsInstance.valueOf();
+                  }}
                 >
                   <DatePicker showTime />
                 </Form.Item>
