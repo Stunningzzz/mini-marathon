@@ -5,15 +5,14 @@ import {
   DatePicker,
   Form,
   Input,
-  message,
   Modal,
   Radio,
   Select,
   Space,
   Switch,
+  message,
 } from 'antd';
 import dayjs from 'dayjs';
-import { observer } from 'mobx-react-lite';
 import Cron, { CronFns } from 'qnn-react-cron';
 import { FC, useEffect, useRef } from 'react';
 import { addContent, updateContent } from './api';
@@ -33,7 +32,7 @@ export const defaultContent: Partial<ContentListItem> = {
   briefing: '',
   contentName: '',
   enterpriseWeChatHookKeys: [''],
-  scheduleType: 0,
+  scheduleType: 2,
   scheduledPushTime: Date.now(),
   scheduledPushCron: '0/10 * * * * ?',
 };
@@ -54,7 +53,7 @@ const formItemLayoutWithOutLabel = {
 
 //可抽离的逻辑处理函数/组件
 
-let ContentModal = (props: IProps) => {
+export default function ContentModal(props: IProps) {
   //变量声明、解构
   const { modalFormData, modalState, onCancel, reload } = props;
   //组件状态
@@ -131,6 +130,10 @@ let ContentModal = (props: IProps) => {
         <Form.Item label="推送方式" name="scheduleType">
           <Radio.Group
             options={[
+              {
+                label: '不推送',
+                value: 2,
+              },
               {
                 label: '指定日期推送',
                 value: 0,
@@ -276,7 +279,7 @@ let ContentModal = (props: IProps) => {
       </Form>
     </Modal>
   );
-};
+}
 
 //props类型定义
 interface IProps {
@@ -285,7 +288,3 @@ interface IProps {
   onCancel: () => void;
   reload: () => void;
 }
-
-//prop-type定义，可选
-ContentModal = observer(ContentModal);
-export { ContentModal as default };

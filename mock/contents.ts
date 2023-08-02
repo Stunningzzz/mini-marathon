@@ -11,7 +11,7 @@ const waitTime = (time: number = 100) => {
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 export default {
   // 支持值为 Object 和 Array
-  'GET /api/contents': async (req: Request, res: Response) => {
+  'GET /api/pages/contents': async (req: Request, res: Response) => {
     await waitTime(1000);
     res.send({
       success: true,

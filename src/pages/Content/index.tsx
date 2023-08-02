@@ -1,13 +1,12 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { Link } from '@umijs/max';
-import { Button, Popconfirm, Tag, message } from 'antd';
-import { observer } from 'mobx-react-lite';
-import { ContentListItem } from './types';
-import { deleteContent, listContent } from './api';
 import { useRequest } from 'ahooks';
-import ContentModal, { ContentModalState, defaultContent } from './ContentModal';
+import { Button, Popconfirm, Tag, message } from 'antd';
 import { useState } from 'react';
+import ContentModal, { ContentModalState, defaultContent } from './ContentModal';
+import { deleteContent, listContent, pushOnce } from './api';
+import { ContentListItem } from './types';
 
 //私有常量
 
@@ -28,9 +27,8 @@ const IncludeTag = ({ isInclude }: { isInclude: boolean }) => {
   );
 };
 
-let Content = (props: IProps) => {
+export default function Content() {
   //变量声明、解构
-  const {} = props;
   //组件状态
   const [modalState, setModalState] = useState(ContentModalState.CLOSE);
   const [modalFormData, setModalFormData] = useState<Partial<ContentListItem>>(defaultContent);
@@ -41,16 +39,13 @@ let Content = (props: IProps) => {
     loading: listLoading,
     refreshAsync: reload,
   } = useRequest(listContent, { manual: false });
-  console.log({ data });
-  const { runAsync: runDeleteContent, loading: deleteLoading } = useRequest(deleteContent, {
+  const { runAsync: runDeleteContent } = useRequest(deleteContent, {
     manual: true,
     onSuccess() {
       message.success('删除成功');
       reload();
     },
   });
-
-  console.log('deleteLoading :>> ', deleteLoading);
 
   const {
     runAsync: runPushOnce,
@@ -103,13 +98,13 @@ let Content = (props: IProps) => {
           },
           {
             title: '天气',
-            render(dom, entity) {
+            render(_dom, entity) {
               return <IncludeTag isInclude={entity.containWeather} />;
             },
           },
           {
             title: '格言',
-            render(dom, entity) {
+            render(_dom, entity) {
               return <IncludeTag isInclude={entity.containMotto} />;
             },
           },
@@ -125,7 +120,7 @@ let Content = (props: IProps) => {
           },
           {
             title: '操作',
-            render: (_, record) => [
+            render: (_dom, record) => [
               <Button
                 key={123}
                 type="link"
@@ -148,7 +143,7 @@ let Content = (props: IProps) => {
               </Button>,
               <Popconfirm
                 key={897}
-                title={`确认删除【${record.id}】吗？`}
+                title={`确认删除【${record.contentName}】吗？`}
                 onConfirm={() => runDeleteContent({ id: record.id })}
               >
                 <Button type="link" danger>
@@ -161,13 +156,4 @@ let Content = (props: IProps) => {
       />
     </PageContainer>
   );
-};
-
-//props类型定义
-interface IProps {
-  demo?: any;
 }
-
-//prop-type定义，可选
-Content = observer(Content);
-export { Content as default };

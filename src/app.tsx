@@ -101,6 +101,5 @@ export const request: RequestConfig = {
   //   baseURL: '/api',
   baseURL: 'http://192.168.43.54:8080/',
   withCredentials: true,
-
   ...errorConfig,
 };

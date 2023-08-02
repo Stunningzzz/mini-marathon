@@ -1,49 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// import { getFakeCaptcha } from '@/services/ant-design-pro/login';
-import {
-  AlipayCircleOutlined,
-  LockOutlined,
-  // MobileOutlined,
-  TaobaoCircleOutlined,
-  UserOutlined,
-  WeiboCircleOutlined,
-} from '@ant-design/icons';
-import {
-  LoginForm,
-  ProFormCaptcha,
-  ProFormCheckbox,
-  ProFormText,
-} from '@ant-design/pro-components';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { LoginForm, ProFormText } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useModel } from '@umijs/max';
 import { Alert, Tabs, message } from 'antd';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import { getCurrentUser, login } from './api';
-
-// const ActionIcons = () => {
-//   const langClassName = useEmotionCss(({ token }) => {
-//     return {
-//       marginLeft: '8px',
-//       color: 'rgba(0, 0, 0, 0.2)',
-//       fontSize: '24px',
-//       verticalAlign: 'middle',
-//       cursor: 'pointer',
-//       transition: 'color 0.3s',
-//       '&:hover': {
-//         color: token.colorPrimaryActive,
-//       },
-//     };
-//   });
-
-//   return (
-//     <>
-//       <AlipayCircleOutlined key="AlipayCircleOutlined" className={langClassName} />
-//       <TaobaoCircleOutlined key="TaobaoCircleOutlined" className={langClassName} />
-//       <WeiboCircleOutlined key="WeiboCircleOutlined" className={langClassName} />
-//     </>
-//   );
-// };
 
 const LoginMessage: React.FC<{
   content: string;
@@ -63,7 +25,7 @@ const LoginMessage: React.FC<{
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const { setInitialState } = useModel('@@initialState');
 
   const containerClassName = useEmotionCss(() => {
     return {
