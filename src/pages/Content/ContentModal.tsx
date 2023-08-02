@@ -171,7 +171,6 @@ export default function ContentModal(props: IProps) {
               1: (
                 <Form.Item label="推送设置" name="scheduledPushCron">
                   <Space direction="vertical">
-                    {cronValue}
                     <div
                       onChange={(e) => e.stopPropagation()}
                       onClick={() => runSetCron()}
