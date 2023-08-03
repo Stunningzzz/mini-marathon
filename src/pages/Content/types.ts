@@ -30,13 +30,17 @@ export type ContentListItem = {
    */
   projectId: string;
   /**
-   * 按cron表达式执行时不能为空
+   * 循环推送时间，24小时制：HH:mm
    */
-  scheduledPushCron?: string;
+  scheduledPushDayTime: null | string;
+  /**
+   * 周几，使用二进制位表示某一天需要推送。第1位为1时表示周一被选中，为0时表示周一未被选中，以此类推。例子：1111111表示周一到周日都被选中，0000001表示只有周日被选中。
+   */
+  scheduledPushWeekDayPattern: number | null;
   /**
    * 指定日期推送时不能为空
    */
-  scheduledPushTime?: number;
+  scheduledPushTime: number | null;
   // 0: 指定日期 1: 指定cron表达式 2:暂不执行
   scheduleType: 0 | 1 | 2;
 };

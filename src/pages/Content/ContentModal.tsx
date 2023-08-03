@@ -1,63 +1,38 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { useDebounceFn, useRequest } from 'ahooks';
+import { useRequest } from 'ahooks';
 import {
   Button,
+  Checkbox,
   DatePicker,
   Form,
   Input,
   Modal,
   Radio,
   Select,
-  Space,
   Switch,
+  TimePicker,
   message,
 } from 'antd';
 import dayjs from 'dayjs';
-import Cron, { CronFns } from 'qnn-react-cron';
-import { FC, useEffect, useRef } from 'react';
+import { isNil, sum } from 'lodash';
+import { CronFns } from 'qnn-react-cron';
+import { useEffect, useRef } from 'react';
 import { addContent, updateContent } from './api';
 import { ContentListItem } from './types';
-
-//私有常量
-
-export enum ContentModalState {
-  EDIT = '编辑',
-  ADD = '新建',
-  CLOSE = '关闭',
-}
-
-export const defaultContent: Partial<ContentListItem> = {
-  containMotto: true,
-  containWeather: true,
-  briefing: '',
-  contentName: '',
-  enterpriseWeChatHookKeys: [''],
-  scheduleType: 2,
-  scheduledPushTime: Date.now(),
-  scheduledPushCron: '0/10 * * * * ?',
-};
-
-const CronComponent: FC<Partial<Cron.CronProps>> = Cron as any;
-
-const formItemLayout = {
-  labelCol: {
-    span: 8,
-  },
-};
-
-const formItemLayoutWithOutLabel = {
-  wrapperCol: {
-    offset: 8,
-  },
-};
-
-//可抽离的逻辑处理函数/组件
+import {
+  ContentModalState,
+  pushDayTimeFormat,
+  rules,
+  formItemLayout,
+  formItemLayoutWithOutLabel,
+  pushTimeFormat,
+} from './util';
 
 export default function ContentModal(props: IProps) {
   //变量声明、解构
   const { modalFormData, modalState, onCancel, reload } = props;
   //组件状态
-  const [form] = Form.useForm<ContentListItem>();
+  const [form] = Form.useForm<Record<keyof ContentListItem, any>>();
   const fnRef = useRef<CronFns>();
   //网络IO
   const { runAsync: runUpdateContent, loading: updateLoading } = useRequest(updateContent, {
@@ -77,22 +52,31 @@ export default function ContentModal(props: IProps) {
     },
   });
 
-  const { run: runSetCron } = useDebounceFn(
-    () => form.setFieldValue('scheduledPushCron', fnRef.current?.getValue()),
-    {
-      wait: 100,
-    },
-  );
   //数据转换
 
   //逻辑处理函数
 
   //组件Effect
   useEffect(() => {
-    form.setFieldsValue(modalFormData);
+    console.log(dayjs(`${dayjs().format('YYYY-MM-DD')} ${modalFormData.scheduledPushDayTime}`));
+    form.setFieldsValue({
+      ...modalFormData,
+      scheduledPushDayTime: isNil(modalFormData.scheduledPushDayTime)
+        ? null
+        : dayjs(`${dayjs().format('YYYY-MM-DD')} ${modalFormData.scheduledPushDayTime}`),
+      scheduledPushWeekDayPattern: isNil(modalFormData.scheduledPushWeekDayPattern)
+        ? null
+        : modalFormData.scheduledPushWeekDayPattern
+            .toString(2)
+            .split('')
+            .map((item, index, arr) => {
+              return item === '1' ? 2 ** (arr.length - index - 1) : 0;
+            }),
+      scheduledPushTime: isNil(modalFormData.scheduledPushTime)
+        ? null
+        : dayjs(modalFormData.scheduledPushTime),
+    });
   }, [modalFormData]);
-
-  (window as any).form = form;
 
   return (
     <Modal
@@ -109,6 +93,16 @@ export default function ContentModal(props: IProps) {
         labelCol={{ span: 8 }}
         form={form}
         onFinish={(data) => {
+          data = {
+            ...data,
+            scheduledPushDayTime: isNil(data.scheduledPushDayTime)
+              ? null
+              : data.scheduledPushDayTime.format(pushDayTimeFormat),
+            scheduledPushWeekDayPattern: sum(data.scheduledPushWeekDayPattern),
+            scheduledPushTime: isNil(data.scheduledPushTime)
+              ? null
+              : data.scheduledPushTime.valueOf(),
+          };
           if (modalState === ContentModalState.ADD) {
             runAddContent({ ...modalFormData, ...data });
           } else {
@@ -116,15 +110,7 @@ export default function ContentModal(props: IProps) {
           }
         }}
       >
-        <Form.Item
-          label="名称"
-          name="contentName"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
+        <Form.Item label="名称" name="contentName" rules={rules}>
           <Input placeholder="请输入内容名称" />
         </Form.Item>
         <Form.Item label="推送方式" name="scheduleType">
@@ -149,47 +135,32 @@ export default function ContentModal(props: IProps) {
         <Form.Item noStyle shouldUpdate>
           {(form) => {
             const scheduleType = form.getFieldValue('scheduleType');
-            const cronValue = form.getFieldValue('scheduledPushCron');
-            const setCronValue = (value = defaultContent.scheduledPushCron) => {
-              form.setFieldValue('scheduledPushCron', value);
-            };
+
             return {
               0: (
-                <Form.Item
-                  label="推送时间"
-                  name="scheduledPushTime"
-                  getValueProps={(num) => {
-                    return { value: num === null ? num : dayjs(num) };
-                  }}
-                  normalize={(dayjsInstance) => {
-                    return dayjsInstance === null ? dayjsInstance : dayjsInstance.valueOf();
-                  }}
-                >
-                  <DatePicker showTime />
+                <Form.Item label="推送时间" rules={rules} name="scheduledPushTime">
+                  <DatePicker showTime format={pushTimeFormat} />
                 </Form.Item>
               ),
               1: (
-                <Form.Item label="推送设置" name="scheduledPushCron">
-                  <Space direction="vertical">
-                    <div
-                      onChange={(e) => e.stopPropagation()}
-                      onClick={() => runSetCron()}
-                      onInput={() => runSetCron()}
-                    >
-                      <CronComponent
-                        getCronFns={(data) => (fnRef.current = data)}
-                        footer={
-                          <Space>
-                            <Button onClick={() => setCronValue(defaultContent.scheduledPushCron)}>
-                              重置
-                            </Button>
-                          </Space>
-                        }
-                        value={cronValue}
-                      />
-                    </div>
-                  </Space>
-                </Form.Item>
+                <>
+                  <Form.Item label="推送周期" rules={rules} name="scheduledPushWeekDayPattern">
+                    <Checkbox.Group
+                      options={['一', '二', '三', '四', '五', '六', '日'].map((label, index) => ({
+                        label: `周${label}`,
+                        value: 2 ** index,
+                      }))}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    rules={rules}
+                    label="推送时间"
+                    name="scheduledPushDayTime"
+                    initialValue={dayjs(Date.now())}
+                  >
+                    <TimePicker format={pushDayTimeFormat} />
+                  </Form.Item>
+                </>
               ),
               2: null,
             }[scheduleType as number];

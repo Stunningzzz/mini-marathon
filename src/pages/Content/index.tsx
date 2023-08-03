@@ -4,9 +4,10 @@ import { Link } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { Button, Popconfirm, Tag, message } from 'antd';
 import { useState } from 'react';
-import ContentModal, { ContentModalState, defaultContent } from './ContentModal';
+import ContentModal from './ContentModal';
 import { deleteContent, listContent, pushOnce } from './api';
 import { ContentListItem } from './types';
+import { ContentModalState, defaultContent } from './util';
 
 //私有常量
 
@@ -73,7 +74,7 @@ export default function Content() {
         reload={reload}
       />
       <ProTable<ContentListItem>
-        rowKey="key"
+        rowKey="id"
         search={false}
         loading={listLoading}
         toolBarRender={() => [
