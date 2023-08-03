@@ -1,5 +1,6 @@
 import { request } from '@umijs/max';
 import { ContentListItem } from './types';
+import { omit } from 'lodash';
 
 export async function listContent(params: {
   /** 当前的页码 */
@@ -16,17 +17,27 @@ export async function listContent(params: {
   return res.records;
 }
 
-export async function updateContent({ id, ...rest }: ContentListItem) {
-  return request(`/contents/${id}`, {
+const transformData = (item: ContentListItem) => {
+  if (item.scheduleType === 0) {
+    return omit(item, 'scheduledPushDayTime', 'scheduledPushWeekDayPattern');
+  } else if (item.scheduleType === 1) {
+    return omit(item, 'scheduledPushTime');
+  } else {
+    return omit(item, 'scheduledPushDayTime', 'scheduledPushWeekDayPattern', 'scheduledPushTime');
+  }
+};
+
+export async function updateContent(item: ContentListItem) {
+  return request(`/contents/${item.id}`, {
     method: 'PUT',
-    data: rest,
+    data: transformData(item),
   });
 }
 
-export async function addContent(params: Partial<ContentListItem>) {
+export async function addContent(item: ContentListItem) {
   return request('/contents', {
     method: 'POST',
-    data: params,
+    data: transformData(item),
   });
 }
 
