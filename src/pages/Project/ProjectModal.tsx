@@ -1,21 +1,7 @@
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { useDebounceFn, useRequest } from 'ahooks';
-import {
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  message,
-  Modal,
-  Radio,
-  Select,
-  Space,
-  Switch,
-} from 'antd';
-import dayjs from 'dayjs';
+import { useRequest } from 'ahooks';
+import { Col, DatePicker, Form, Input, InputNumber, message, Modal, Radio, Row } from 'antd';
 import { observer } from 'mobx-react-lite';
-import Cron, { CronFns } from 'qnn-react-cron';
-import { FC, useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { addProject, updateProject } from './api';
 import { IProjectItem } from './types';
 
@@ -28,28 +14,7 @@ export enum ProjectModalState {
 }
 
 export const defaultProject: Partial<IProjectItem> = {
-  // containMotto: true,
-  // containWeather: true,
-  // briefing: '',
-  // contentName: '',
-  // enterpriseWeChatHookKeys: [''],
-  // scheduleType: 0,
-  // scheduledPushDateTime: Date.now(),
-  // scheduledPushCron: '? ? ? ? * ? ?',
-};
-
-const CronComponent: FC<Partial<Cron.CronProps>> = Cron as any;
-
-const formItemLayout = {
-  labelCol: {
-    span: 8,
-  },
-};
-
-const formItemLayoutWithOutLabel = {
-  wrapperCol: {
-    offset: 8,
-  },
+  status: 0,
 };
 
 //可抽离的逻辑处理函数/组件
@@ -59,7 +24,6 @@ let ProjectModal = (props: IProps) => {
   const { modalFormData, modalState, onCancel, reload } = props;
   //组件状态
   const [form] = Form.useForm<IProjectItem>();
-  const fnRef = useRef<CronFns>();
   //网络IO
   const { runAsync: runUpdateProject, loading: updateLoading } = useRequest(updateProject, {
     manual: true,
@@ -78,12 +42,6 @@ let ProjectModal = (props: IProps) => {
     },
   });
 
-  const { run: runSetCron } = useDebounceFn(
-    () => form.setFieldValue('scheduledPushCron', fnRef.current?.getValue()),
-    {
-      wait: 100,
-    },
-  );
   //数据转换
 
   //逻辑处理函数
@@ -97,7 +55,7 @@ let ProjectModal = (props: IProps) => {
 
   return (
     <Modal
-      title={`${modalState}内容`}
+      title={`${modalState}项目`}
       width="800px"
       open={modalState !== ProjectModalState.CLOSE}
       onCancel={onCancel}
@@ -107,7 +65,7 @@ let ProjectModal = (props: IProps) => {
     >
       <Form
         labelAlign="right"
-        labelCol={{ span: 8 }}
+        // labelCol={{ span: 4 }}
         form={form}
         onFinish={(data) => {
           if (modalState === ProjectModalState.ADD) {
@@ -118,157 +76,72 @@ let ProjectModal = (props: IProps) => {
         }}
       >
         <Form.Item
-          label="名称"
-          name="contentName"
+          label="项目"
+          name="projectName"
           rules={[
             {
               required: true,
             },
           ]}
         >
-          <Input placeholder="请输入内容名称" />
+          <Input placeholder="请输入项目名称" />
         </Form.Item>
-        <Form.Item label="推送方式" name="scheduleType">
+        <Form.Item label="负责人" name="projectLeader">
+          <Input placeholder="请输入负责人" />
+        </Form.Item>
+        <Form.Item label="项目周期" name="rangeTime">
+          <DatePicker.RangePicker />
+        </Form.Item>
+        <Form.Item label="状态" name="status">
           <Radio.Group
             options={[
               {
-                label: '指定日期推送',
+                label: '未开始',
                 value: 0,
               },
               {
-                label: '循环推送',
+                label: '进行中',
                 value: 1,
+              },
+              {
+                label: '已结束',
+                value: 2,
               },
             ]}
           />
         </Form.Item>
-
-        <Form.Item noStyle shouldUpdate>
-          {(form) => {
-            const scheduleType = form.getFieldValue('scheduleType');
-            const cronValue = form.getFieldValue('scheduledPushCron');
-            const setCronValue = (value = defaultProject.scheduledPushCron) => {
-              console.log('set', value);
-              form.setFieldValue('scheduledPushCron', value);
-            };
-            console.log({ cronValue });
-            return scheduleType === 0 ? (
-              <Form.Item
-                label="推送时间"
-                name="scheduledPushDateTime"
-                getValueProps={(num) => {
-                  return { value: dayjs(num) };
-                }}
-                normalize={(dayjsInstance) => dayjsInstance.valueOf()}
-              >
-                <DatePicker showTime />
-              </Form.Item>
-            ) : (
-              <Form.Item label="推送设置" name="scheduledPushCron">
-                <Space direction="vertical">
-                  {cronValue}
-                  <div
-                    onChange={(e) => e.stopPropagation()}
-                    onClick={() => runSetCron()}
-                    onInput={() => runSetCron()}
-                  >
-                    <CronComponent
-                      getCronFns={(data) => (fnRef.current = data)}
-                      footer={
-                        <Space>
-                          <Button onClick={() => setCronValue(defaultProject.scheduledPushCron)}>
-                            重置
-                          </Button>
-                        </Space>
-                      }
-                      value={cronValue}
-                    />
-                  </div>
-                </Space>
-              </Form.Item>
-            );
-          }}
-        </Form.Item>
-
-        <Form.Item label="包含天气" name="containWeather" valuePropName="checked">
-          <Switch />
-        </Form.Item>
-        <Form.Item label="包含格言" name="containMotto" valuePropName="checked">
-          <Switch />
-        </Form.Item>
-        <Form.Item label="简报" name="briefing">
-          <Input placeholder="请输入简报内容" />
-        </Form.Item>
-        <Form.Item label="关联项目">
-          <Select />
-        </Form.Item>
-
-        <Form.List
-          name="enterpriseWeChatHookKeys"
-          rules={[
-            {
-              validator: async (_, names) => {
-                if (!names || names.length < 1) {
-                  return Promise.reject(new Error('至少关联一个机器人'));
-                }
-              },
-            },
-          ]}
-        >
-          {(fields, { add, remove }, { errors }) => (
-            <>
-              {fields.map((field, index) => (
-                <Form.Item
-                  {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
-                  label={index === 0 ? '企微机器人' : ''}
-                  required={true}
-                  key={field.key}
-                >
-                  <Form.Item
-                    {...field}
-                    validateTrigger={['onChange', 'onBlur']}
-                    rules={[
-                      {
-                        required: true,
-                        whitespace: true,
-                        message: `'请填入机器人url${fields.length > 1 ? '或删除当前项' : ''}`,
-                      },
-                    ]}
-                    noStyle
-                  >
-                    <Input placeholder="请填入机器人url" style={{ width: '60%' }} />
-                  </Form.Item>
-                  {fields.length > 1 ? (
-                    <MinusCircleOutlined
-                      style={{
-                        position: 'relative',
-                        top: '4px',
-                        margin: '0 8px',
-                        color: '#999',
-                        fontSize: '24px',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s',
-                      }}
-                      onClick={() => remove(field.name)}
-                    />
-                  ) : null}
-                </Form.Item>
-              ))}
-              <Form.Item wrapperCol={{ offset: 4 }}>
-                <Button
-                  type="dashed"
-                  onClick={() => add()}
-                  style={{ width: '60%' }}
-                  icon={<PlusOutlined />}
-                >
-                  添加机器人
-                </Button>
-
-                <Form.ErrorList errors={errors} />
-              </Form.Item>
-            </>
-          )}
-        </Form.List>
+        <Row>
+          <Col span={12}>
+            <Form.Item label="任务总数" name="taskCount">
+              <InputNumber precision={0} min={0} defaultValue={0} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="已解决任务数" name="solvedTaskCount">
+              <InputNumber precision={0} min={0} defaultValue={0} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="需求总数" name="demandCount">
+              <InputNumber precision={0} min={0} defaultValue={0} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="已解决需求数" name="solvedDemandCount">
+              <InputNumber precision={0} min={0} defaultValue={0} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="缺陷总数" name="bugCount">
+              <InputNumber precision={0} min={0} defaultValue={0} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="已解决缺陷数" name="solvedBugCount">
+              <InputNumber precision={0} min={0} defaultValue={0} />
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
     </Modal>
   );
