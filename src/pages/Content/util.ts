@@ -16,7 +16,7 @@ export const defaultContent: Partial<ContentListItem> = {
   contentName: '',
   enterpriseWeChatHookKeys: [''],
   scheduleType: 2,
-  scheduledPushTime: null,
+  scheduledPushDateTime: null,
   scheduledPushWeekDayPattern: null,
   scheduledPushDayTime: null,
 };

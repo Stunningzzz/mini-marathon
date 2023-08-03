@@ -34,7 +34,7 @@ export const defaultProject: Partial<IProjectItem> = {
   // contentName: '',
   // enterpriseWeChatHookKeys: [''],
   // scheduleType: 0,
-  // scheduledPushTime: Date.now(),
+  // scheduledPushDateTime: Date.now(),
   // scheduledPushCron: '? ? ? ? * ? ?',
 };
 
@@ -155,7 +155,7 @@ let ProjectModal = (props: IProps) => {
             return scheduleType === 0 ? (
               <Form.Item
                 label="推送时间"
-                name="scheduledPushTime"
+                name="scheduledPushDateTime"
                 getValueProps={(num) => {
                   return { value: dayjs(num) };
                 }}

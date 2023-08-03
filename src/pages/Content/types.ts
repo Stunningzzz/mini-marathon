@@ -40,7 +40,7 @@ export type ContentListItem = {
   /**
    * 指定日期推送时不能为空
    */
-  scheduledPushTime: number | null;
+  scheduledPushDateTime: number | null;
   /**
    * 0: 指定日期 1: 指定cron表达式 2:暂不执行
    */

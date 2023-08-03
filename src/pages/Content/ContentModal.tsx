@@ -72,9 +72,9 @@ export default function ContentModal(props: IProps) {
             .map((item, index, arr) => {
               return item === '1' ? 2 ** (arr.length - index - 1) : 0;
             }),
-      scheduledPushTime: isNil(modalFormData.scheduledPushTime)
+      scheduledPushDateTime: isNil(modalFormData.scheduledPushDateTime)
         ? null
-        : dayjs(modalFormData.scheduledPushTime),
+        : dayjs(modalFormData.scheduledPushDateTime),
     });
   }, [modalFormData]);
 
@@ -99,9 +99,9 @@ export default function ContentModal(props: IProps) {
               ? null
               : data.scheduledPushDayTime.format(pushDayTimeFormat),
             scheduledPushWeekDayPattern: sum(data.scheduledPushWeekDayPattern),
-            scheduledPushTime: isNil(data.scheduledPushTime)
+            scheduledPushDateTime: isNil(data.scheduledPushDateTime)
               ? null
-              : data.scheduledPushTime.valueOf(),
+              : data.scheduledPushDateTime.valueOf(),
           };
           if (modalState === ContentModalState.ADD) {
             runAddContent({ ...modalFormData, ...data });
@@ -138,7 +138,7 @@ export default function ContentModal(props: IProps) {
 
             return {
               0: (
-                <Form.Item label="推送时间" rules={rules} name="scheduledPushTime">
+                <Form.Item label="推送时间" rules={rules} name="scheduledPushDateTime">
                   <DatePicker showTime format={pushTimeFormat} />
                 </Form.Item>
               ),

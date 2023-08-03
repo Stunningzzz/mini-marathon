@@ -32,7 +32,7 @@ export default {
             scheduleType: 1,
             scheduledPushDayTime: '04:02',
             scheduledPushWeekDayPattern: 31,
-            scheduledPushTime: Date.now(),
+            scheduledPushDateTime: Date.now(),
           },
         ],
       },
