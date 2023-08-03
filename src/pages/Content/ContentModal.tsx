@@ -15,17 +15,16 @@ import {
 } from 'antd';
 import dayjs from 'dayjs';
 import { isNil, sum } from 'lodash';
-import { CronFns } from 'qnn-react-cron';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { addContent, updateContent } from './api';
 import { ContentListItem } from './types';
 import {
   ContentModalState,
-  pushDayTimeFormat,
-  rules,
   formItemLayout,
   formItemLayoutWithOutLabel,
+  pushDayTimeFormat,
   pushTimeFormat,
+  rules,
 } from './util';
 
 export default function ContentModal(props: IProps) {
@@ -33,7 +32,7 @@ export default function ContentModal(props: IProps) {
   const { modalFormData, modalState, onCancel, reload } = props;
   //组件状态
   const [form] = Form.useForm<Record<keyof ContentListItem, any>>();
-  const fnRef = useRef<CronFns>();
+
   //网络IO
   const { runAsync: runUpdateContent, loading: updateLoading } = useRequest(updateContent, {
     manual: true,
@@ -58,7 +57,6 @@ export default function ContentModal(props: IProps) {
 
   //组件Effect
   useEffect(() => {
-    console.log(dayjs(`${dayjs().format('YYYY-MM-DD')} ${modalFormData.scheduledPushDayTime}`));
     form.setFieldsValue({
       ...modalFormData,
       scheduledPushDayTime: isNil(modalFormData.scheduledPushDayTime)
@@ -93,7 +91,7 @@ export default function ContentModal(props: IProps) {
         labelCol={{ span: 8 }}
         form={form}
         onFinish={(data) => {
-          data = {
+          const transformData = {
             ...data,
             scheduledPushDayTime: isNil(data.scheduledPushDayTime)
               ? null
@@ -104,9 +102,9 @@ export default function ContentModal(props: IProps) {
               : data.scheduledPushDateTime.valueOf(),
           };
           if (modalState === ContentModalState.ADD) {
-            runAddContent({ ...modalFormData, ...data });
+            runAddContent({ ...modalFormData, ...transformData });
           } else {
-            runUpdateContent({ ...modalFormData, ...data });
+            runUpdateContent({ ...modalFormData, ...transformData });
           }
         }}
       >
