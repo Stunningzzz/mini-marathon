@@ -98,8 +98,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
  */
 export const request: RequestConfig = {
   // /api 访问本地 mock 接口
-//   baseURL: '/api',
-    baseURL: 'http://localhost:8080/',
+  //   baseURL: '/api',
+  baseURL: 'http://localhost:8080/',
   withCredentials: true,
   ...errorConfig,
 };

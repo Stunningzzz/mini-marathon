@@ -49,12 +49,6 @@ export default function Project() {
 
   return (
     <PageContainer>
-      <ProjectModal
-        modalFormData={modalFormData}
-        modalState={modalState}
-        onCancel={() => setModalState(ProjectModalState.CLOSE)}
-        reload={reload}
-      />
       <ProTable<IProjectItem>
         rowKey="key"
         search={false}
@@ -190,6 +184,12 @@ export default function Project() {
             ],
           },
         ]}
+      />
+      <ProjectModal
+        modalFormData={modalFormData}
+        modalState={modalState}
+        onCancel={() => setModalState(ProjectModalState.CLOSE)}
+        reload={reload}
       />
     </PageContainer>
   );

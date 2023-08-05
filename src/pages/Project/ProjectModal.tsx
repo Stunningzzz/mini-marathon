@@ -48,8 +48,10 @@ let ProjectModal = (props: IProps) => {
 
   //组件Effect
   useEffect(() => {
-    form.setFieldsValue(modalFormData);
-  }, [modalFormData]);
+    if (modalState !== ProjectModalState.CLOSE) {
+      form.setFieldsValue(modalFormData);
+    }
+  }, [modalFormData, modalState]);
 
   (window as any).form = form;
 
