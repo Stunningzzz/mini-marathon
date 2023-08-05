@@ -56,8 +56,8 @@ let ProjectModal = (props: IProps) => {
 
   const handleSubmit = () => {
     const submitData = form.getFieldsValue();
-    const startDate = submitData.rangeTime[0].format('YYYY-MM-DD');
-    const endDate = submitData.rangeTime[1].format('YYYY-MM-DD');
+    const startDate = submitData.rangeTime[0].valueOf();
+    const endDate = submitData.rangeTime[1].valueOf();
     form.setFieldsValue({ ...submitData, startDate, endDate });
     form.submit();
   };
