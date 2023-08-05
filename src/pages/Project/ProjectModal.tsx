@@ -64,9 +64,11 @@ let ProjectModal = (props: IProps) => {
 
   //组件Effect
   useEffect(() => {
-    if (modalState !== ProjectModalState.CLOSE) {
+    if (modalState === ProjectModalState.EDIT) {
       const { startDate, endDate } = modalFormData;
       form.setFieldsValue({ ...modalFormData, rangeTime: [dayjs(startDate), dayjs(endDate)] });
+    } else {
+      form.resetFields();
     }
   }, [modalFormData, modalState]);
 
