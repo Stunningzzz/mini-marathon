@@ -1,5 +1,7 @@
 import { useRequest } from 'ahooks';
 import { Col, DatePicker, Form, Input, InputNumber, message, Modal, Radio, Row } from 'antd';
+import { RangePickerProps } from 'antd/es/date-picker';
+import dayjs, { Dayjs } from 'dayjs';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { addProject, updateProject } from './api';
@@ -13,6 +15,12 @@ export enum ProjectModalState {
   CLOSE = '关闭',
 }
 
+// eslint-disable-next-line arrow-body-style
+const disabledDate: RangePickerProps['disabledDate'] = (current) => {
+  // Can not select days before today and today
+  return current && current < dayjs().endOf('day');
+};
+
 export const defaultProject: Partial<IProjectItem> = {
   status: 0,
 };
@@ -23,7 +31,7 @@ let ProjectModal = (props: IProps) => {
   //变量声明、解构
   const { modalFormData, modalState, onCancel, reload } = props;
   //组件状态
-  const [form] = Form.useForm<IProjectItem>();
+  const [form] = Form.useForm<IProjectItem & { rangeTime: Dayjs[] }>();
   //网络IO
   const { runAsync: runUpdateProject, loading: updateLoading } = useRequest(updateProject, {
     manual: true,
@@ -46,10 +54,19 @@ let ProjectModal = (props: IProps) => {
 
   //逻辑处理函数
 
+  const handleSubmit = () => {
+    const submitData = form.getFieldsValue();
+    const startDate = submitData.rangeTime[0].format('YYYY-MM-DD');
+    const endDate = submitData.rangeTime[1].format('YYYY-MM-DD');
+    form.setFieldsValue({ ...submitData, startDate, endDate });
+    form.submit();
+  };
+
   //组件Effect
   useEffect(() => {
     if (modalState !== ProjectModalState.CLOSE) {
-      form.setFieldsValue(modalFormData);
+      const { startDate, endDate } = modalFormData;
+      form.setFieldsValue({ ...modalFormData, rangeTime: [dayjs(startDate), dayjs(endDate)] });
     }
   }, [modalFormData, modalState]);
 
@@ -62,18 +79,18 @@ let ProjectModal = (props: IProps) => {
       open={modalState !== ProjectModalState.CLOSE}
       onCancel={onCancel}
       confirmLoading={updateLoading || addLoading}
-      onOk={form.submit}
+      onOk={handleSubmit}
       maskClosable={false}
     >
       <Form
         labelAlign="right"
         initialValues={defaultProject}
         form={form}
-        onFinish={(data) => {
+        onFinish={(finishData) => {
           if (modalState === ProjectModalState.ADD) {
-            runAddProject({ ...modalFormData, ...data });
+            runAddProject({ ...modalFormData, ...finishData });
           } else {
-            runUpdateProject({ ...modalFormData, ...data });
+            runUpdateProject({ ...modalFormData, ...finishData });
           }
         }}
       >
@@ -99,7 +116,7 @@ let ProjectModal = (props: IProps) => {
           </Col>
           <Col span={12}>
             <Form.Item label="项目周期" name="rangeTime">
-              <DatePicker.RangePicker />
+              <DatePicker.RangePicker disabledDate={disabledDate} />
             </Form.Item>
           </Col>
         </Row>
