@@ -9,11 +9,15 @@ export async function getProjects(params: {
 }) {
   const res = await request<{
     records: IProjectItem[];
+    currentPage: number;
+    pageSize: number;
+    totalPage: number;
+    totalSize: number;
   }>('/pages/projects', {
     method: 'GET',
     params: { ...params, size: 9999 },
   });
-  return res.records;
+  return res;
 }
 
 export async function updateProject(params: IProjectItem) {

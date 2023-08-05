@@ -67,7 +67,7 @@ let ProjectModal = (props: IProps) => {
     >
       <Form
         labelAlign="right"
-        // labelCol={{ span: 4 }}
+        initialValues={defaultProject}
         form={form}
         onFinish={(data) => {
           if (modalState === ProjectModalState.ADD) {
@@ -94,7 +94,7 @@ let ProjectModal = (props: IProps) => {
         <Row>
           <Col span={12}>
             <Form.Item label="电话" name="phone">
-              <Input defaultValue={''} style={{ width: 300 }} maxLength={11} />
+              <Input style={{ width: 300 }} maxLength={11} />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -124,32 +124,32 @@ let ProjectModal = (props: IProps) => {
         <Row>
           <Col span={12}>
             <Form.Item label="任务总数" name="taskCount">
-              <InputNumber precision={0} min={0} defaultValue={0} />
+              <InputNumber precision={0} min={0} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="已解决任务数" name="solvedTaskCount">
-              <InputNumber precision={0} min={0} defaultValue={0} />
+              <InputNumber precision={0} min={0} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="需求总数" name="demandCount">
-              <InputNumber precision={0} min={0} defaultValue={0} />
+              <InputNumber precision={0} min={0} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="已解决需求数" name="solvedDemandCount">
-              <InputNumber precision={0} min={0} defaultValue={0} />
+              <InputNumber precision={0} min={0} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="缺陷总数" name="bugCount">
-              <InputNumber precision={0} min={0} defaultValue={0} />
+              <InputNumber precision={0} min={0} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="已解决缺陷数" name="solvedBugCount">
-              <InputNumber precision={0} min={0} defaultValue={0} />
+              <InputNumber precision={0} min={0} />
             </Form.Item>
           </Col>
         </Row>

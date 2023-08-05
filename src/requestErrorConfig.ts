@@ -19,12 +19,11 @@ export const errorConfig: RequestConfig = {
   // 错误处理： umi@3 的错误处理方案。
   errorConfig: {
     // 错误接收及处理
-    errorHandler: (error: any) => {
-      const err = error.response.data;
+    errorHandler: (error) => {
+      console.log('errorConfig :>> ', error);
       notification.open({
         type: 'error',
-        description: err.desc,
-        message: `错误码：${err.code}`,
+        message: error.message,
       });
     },
   },
@@ -43,7 +42,6 @@ export const errorConfig: RequestConfig = {
   responseInterceptors: [
     (response) => {
       const { data } = response as unknown as ResponseStructure;
-
       if (data?.success === false) {
         throw data;
       }
