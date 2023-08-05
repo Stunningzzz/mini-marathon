@@ -24,6 +24,10 @@ export interface IProjectItem {
    */
   endDate: number;
   /**
+   * 电话
+   */
+  phone: string;
+  /**
    * 项目进度，0-100 加权平均 progress = (deliveryRate * 0.5 + demandRate * 0.3 + bugRate * 0.2)
    */
   progress: number;

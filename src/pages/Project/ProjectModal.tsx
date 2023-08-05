@@ -89,9 +89,18 @@ let ProjectModal = (props: IProps) => {
         <Form.Item label="负责人" name="projectLeader">
           <Input placeholder="请输入负责人" />
         </Form.Item>
-        <Form.Item label="项目周期" name="rangeTime">
-          <DatePicker.RangePicker />
-        </Form.Item>
+        <Row>
+          <Col span={12}>
+            <Form.Item label="电话" name="phone">
+              <Input defaultValue={''} style={{ width: 300 }} maxLength={11} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="项目周期" name="rangeTime">
+              <DatePicker.RangePicker />
+            </Form.Item>
+          </Col>
+        </Row>
         <Form.Item label="状态" name="status">
           <Radio.Group
             options={[

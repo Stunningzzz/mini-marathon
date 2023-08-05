@@ -88,6 +88,10 @@ export default function Project() {
             dataIndex: 'projectLeader',
           },
           {
+            title: '电话',
+            dataIndex: 'phone',
+          },
+          {
             title: '开始日期',
             dataIndex: 'startDate',
             render(_, record) {
