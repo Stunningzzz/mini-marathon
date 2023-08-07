@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useRequest } from 'ahooks';
 import { Col, DatePicker, Form, Input, InputNumber, message, Modal, Radio, Row } from 'antd';
 import { RangePickerProps } from 'antd/es/date-picker';
@@ -22,7 +23,16 @@ const disabledDate: RangePickerProps['disabledDate'] = (current) => {
 };
 
 export const defaultProject: Partial<IProjectItem> = {
+  projectName: '3213',
+  projectLeader: '3213',
+  projectDepartment: 'kdl',
   status: 0,
+  taskCount: 0,
+  solvedBugCount: 0,
+  demandCount: 0,
+  solvedDemandCount: 0,
+  bugCount: 0,
+  solvedTaskCount: 0,
 };
 
 //可抽离的逻辑处理函数/组件
@@ -90,7 +100,9 @@ let ProjectModal = (props: IProps) => {
         form={form}
         onFinish={(finishData) => {
           if (modalState === ProjectModalState.ADD) {
-            runAddProject({ ...modalFormData, ...finishData });
+            const startDate = finishData.rangeTime[0].valueOf();
+            const endDate = finishData.rangeTime[1].valueOf();
+            runAddProject({ ...modalFormData, ...finishData, startDate, endDate });
           } else {
             runUpdateProject({ ...modalFormData, ...finishData });
           }
@@ -110,6 +122,9 @@ let ProjectModal = (props: IProps) => {
         <Form.Item label="负责人" name="projectLeader">
           <Input placeholder="请输入负责人" />
         </Form.Item>
+        <Form.Item label="部门" name="projectDepartment">
+          <Input placeholder="请输入部门" />
+        </Form.Item>
         <Row>
           <Col span={12}>
             <Form.Item label="电话" name="phone">
@@ -118,7 +133,7 @@ let ProjectModal = (props: IProps) => {
           </Col>
           <Col span={12}>
             <Form.Item label="项目周期" name="rangeTime">
-              <DatePicker.RangePicker disabledDate={disabledDate} />
+              <DatePicker.RangePicker />
             </Form.Item>
           </Col>
         </Row>

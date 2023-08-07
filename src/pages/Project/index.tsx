@@ -177,6 +177,7 @@ export default function Project() {
                 key={`edit-${record.projectId}`}
                 onClick={() => {
                   setModalState(ProjectModalState.EDIT);
+                  console.log('编辑的 record :>> ', record);
                   setModalFormData({ ...record });
                 }}
               >

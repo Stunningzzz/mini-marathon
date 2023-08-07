@@ -99,7 +99,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 export const request: RequestConfig = {
   // /api 访问本地 mock 接口
   //   baseURL: '/api',
-  baseURL: 'http://127.0.0.1:4523/m1/3057366-0-default/',
+  baseURL: 'http://172.20.212.193:8080/',
   withCredentials: true,
   ...errorConfig,
 };
