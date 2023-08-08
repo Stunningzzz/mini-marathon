@@ -26,10 +26,11 @@ import {
   pushTimeFormat,
   rules,
 } from './util';
+import { getProjects } from '../Project/api';
 
 export default function ContentModal(props: IProps) {
   //变量声明、解构
-  const { modalFormData, modalState, onCancel, reload } = props;
+  const { modalFormData, modalState, onCancel, reload, projectList, projectLoading } = props;
   //组件状态
   const [form] = Form.useForm<Record<keyof ContentListItem, any>>();
 
@@ -168,14 +169,40 @@ export default function ContentModal(props: IProps) {
         <Form.Item label="包含天气" name="containWeather" valuePropName="checked">
           <Switch />
         </Form.Item>
+        <Form.Item noStyle shouldUpdate>
+          {(form) => {
+            const containWeather = form.getFieldValue('containWeather');
+
+            return (
+              containWeather && (
+                <Form.Item label="指定城市获取天气" rules={rules} name="cityForWeather">
+                  <Radio.Group
+                    options={['广州', '北京', '西安', '苏州', '合肥'].map((value) => ({
+                      value,
+                      label: value,
+                    }))}
+                  />
+                </Form.Item>
+              )
+            );
+          }}
+        </Form.Item>
+
         <Form.Item label="包含格言" name="containMotto" valuePropName="checked">
           <Switch />
         </Form.Item>
         <Form.Item label="简报" name="briefing">
           <Input placeholder="请输入简报内容" />
         </Form.Item>
-        <Form.Item label="关联项目">
-          <Select />
+        <Form.Item label="关联项目" name="projectId">
+          <Select
+            placeholder="请选择要关联的项目"
+            loading={projectLoading}
+            options={projectList?.records.map((item) => ({
+              label: item.projectName,
+              value: item.projectId,
+            }))}
+          />
         </Form.Item>
 
         <Form.List
@@ -255,4 +282,6 @@ interface IProps {
   modalState: ContentModalState;
   onCancel: () => void;
   reload: () => void;
+  projectLoading: boolean;
+  projectList: Awaited<ReturnType<typeof getProjects>> | undefined;
 }
