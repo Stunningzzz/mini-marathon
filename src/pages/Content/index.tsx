@@ -2,12 +2,13 @@ import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { Link } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { Button, Popconfirm, Tag, message } from 'antd';
+import { Button, Popconfirm, Tag, Typography, message } from 'antd';
 import { useState } from 'react';
 import ContentModal from './ContentModal';
 import { deleteContent, listContent, pushOnce } from './api';
 import { ContentListItem } from './types';
 import { ContentModalState, defaultContent } from './util';
+import { getProjects } from '../Project/api';
 
 //私有常量
 
@@ -35,6 +36,7 @@ export default function Content() {
   const [modalFormData, setModalFormData] = useState<Partial<ContentListItem>>(defaultContent);
 
   //网络IO
+  const { loading: projectLoading, data: projectList } = useRequest(getProjects);
   const {
     data = [],
     loading: listLoading,
@@ -68,6 +70,8 @@ export default function Content() {
   return (
     <PageContainer>
       <ContentModal
+        projectList={projectList}
+        projectLoading={projectLoading}
         modalFormData={modalFormData}
         modalState={modalState}
         onCancel={() => setModalState(ContentModalState.CLOSE)}
@@ -112,11 +116,32 @@ export default function Content() {
           {
             title: '简报',
             dataIndex: 'briefing',
+            width: 200,
+            render(_dom, entity) {
+              return (
+                <Typography.Paragraph
+                  ellipsis={{
+                    rows: 2,
+                    tooltip: entity.briefing,
+                  }}
+                >
+                  {entity.briefing}
+                </Typography.Paragraph>
+              );
+            },
           },
           {
             title: '关联项目',
+            width: 200,
             render(_dom, entity) {
-              return <Link to={`/project?id=${entity.projectId}`} />;
+              const project = projectList?.records.find(
+                (item) => String(item.projectId) === entity.projectId,
+              );
+              return project ? (
+                <Link to={`/project?id=${project.projectId}`}>{project.projectName}</Link>
+              ) : (
+                '暂无关联项目'
+              );
             },
           },
           {

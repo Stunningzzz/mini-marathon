@@ -23,7 +23,12 @@ const transformData = (item: ContentListItem) => {
   } else if (item.scheduleType === 1) {
     return omit(item, 'scheduledPushDateTime');
   } else {
-    return omit(item, 'scheduledPushDayTime', 'scheduledPushWeekDayPattern', 'scheduledPushDateTime');
+    return omit(
+      item,
+      'scheduledPushDayTime',
+      'scheduledPushWeekDayPattern',
+      'scheduledPushDateTime',
+    );
   }
 };
 

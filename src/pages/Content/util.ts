@@ -1,4 +1,4 @@
-import { ContentListItem } from "./types";
+import { ContentListItem } from './types';
 
 //私有常量
 export enum ContentModalState {
@@ -8,7 +8,7 @@ export enum ContentModalState {
 }
 
 export const pushDayTimeFormat = 'HH:mm';
-export const pushTimeFormat = "YYYY-MM-DD HH:mm";
+export const pushTimeFormat = 'YYYY-MM-DD HH:mm';
 export const defaultContent: Partial<ContentListItem> = {
   containMotto: true,
   containWeather: true,
@@ -19,6 +19,7 @@ export const defaultContent: Partial<ContentListItem> = {
   scheduledPushDateTime: null,
   scheduledPushWeekDayPattern: null,
   scheduledPushDayTime: null,
+  cityForWeather: '广州',
 };
 
 export const formItemLayout = {

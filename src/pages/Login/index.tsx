@@ -105,7 +105,7 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <UserOutlined />,
                 }}
-                placeholder="用户名: admin or user"
+                placeholder="随便输"
                 rules={[
                   {
                     required: true,
@@ -119,7 +119,7 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <LockOutlined />,
                 }}
-                placeholder="密码: ant.design"
+                placeholder="随便输"
                 rules={[
                   {
                     required: true,

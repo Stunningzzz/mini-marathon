@@ -1,4 +1,5 @@
 export type ContentListItem = {
+  cityForWeather: string | null;
   /**
    * 简报
    */
