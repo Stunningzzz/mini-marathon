@@ -30,12 +30,6 @@ export default [
     component: './Content',
   },
   {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
-  },
-  {
     path: '/',
     redirect: '/project',
   },
