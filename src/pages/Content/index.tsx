@@ -100,6 +100,7 @@ export default function Content() {
           {
             title: '内容名称',
             dataIndex: 'contentName',
+            hideInSetting: true,
           },
           {
             title: '天气',
@@ -146,6 +147,7 @@ export default function Content() {
           },
           {
             title: '操作',
+            hideInSetting: true,
             render: (_dom, record) => [
               <Button
                 key={123}

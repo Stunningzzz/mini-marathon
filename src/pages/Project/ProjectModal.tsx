@@ -131,7 +131,7 @@ let ProjectModal = (props: IProps) => {
         <Row>
           <Col span={12}>
             <Form.Item required label="电话" name="phone">
-              <Input style={{ width: 300 }} maxLength={11} />
+              <Input style={{ width: 300 }} placeholder="请输入电话" maxLength={11} />
             </Form.Item>
           </Col>
           <Col span={12}>

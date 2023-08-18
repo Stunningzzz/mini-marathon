@@ -72,6 +72,7 @@ export default function Project() {
             width: 150,
             dataIndex: 'projectName',
             copyable: true,
+            hideInSetting: true,
           },
           {
             title: '项目部门',
@@ -171,6 +172,7 @@ export default function Project() {
             title: '操作',
             fixed: 'right',
             width: 150,
+            hideInSetting: true,
             render: (_, record) => [
               <Button
                 type="link"
