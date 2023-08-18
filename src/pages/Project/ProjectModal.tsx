@@ -23,9 +23,9 @@ const disabledDate: RangePickerProps['disabledDate'] = (current) => {
 };
 
 export const defaultProject: Partial<IProjectItem> = {
-  projectName: '3213',
-  projectLeader: '3213',
-  projectDepartment: 'kdl',
+  projectName: '',
+  projectLeader: '',
+  projectDepartment: '',
   status: 0,
   taskCount: 0,
   solvedBugCount: 0,
@@ -66,9 +66,11 @@ let ProjectModal = (props: IProps) => {
 
   const handleSubmit = () => {
     const submitData = form.getFieldsValue();
-    const startDate = submitData.rangeTime[0].valueOf();
-    const endDate = submitData.rangeTime[1].valueOf();
-    form.setFieldsValue({ ...submitData, startDate, endDate });
+    form.setFieldsValue({
+      ...submitData,
+      startDate: submitData.rangeTime[0]?.valueOf(),
+      endDate: submitData.rangeTime[1]?.valueOf(),
+    });
     form.submit();
   };
 
