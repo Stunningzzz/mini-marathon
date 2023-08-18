@@ -27,6 +27,7 @@ export const defaultProject: Partial<IProjectItem> = {
   projectLeader: '',
   projectDepartment: '',
   status: 0,
+  rangeTime: [dayjs(), dayjs()],
   taskCount: 0,
   solvedBugCount: 0,
   demandCount: 0,
@@ -121,25 +122,25 @@ let ProjectModal = (props: IProps) => {
         >
           <Input placeholder="请输入项目名称" />
         </Form.Item>
-        <Form.Item label="负责人" name="projectLeader">
+        <Form.Item required label="负责人" name="projectLeader">
           <Input placeholder="请输入负责人" />
         </Form.Item>
-        <Form.Item label="部门" name="projectDepartment">
+        <Form.Item required label="部门" name="projectDepartment">
           <Input placeholder="请输入部门" />
         </Form.Item>
         <Row>
           <Col span={12}>
-            <Form.Item label="电话" name="phone">
+            <Form.Item required label="电话" name="phone">
               <Input style={{ width: 300 }} maxLength={11} />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label="项目周期" name="rangeTime">
+            <Form.Item required label="项目周期" name="rangeTime">
               <DatePicker.RangePicker />
             </Form.Item>
           </Col>
         </Row>
-        <Form.Item label="状态" name="status">
+        <Form.Item required label="状态" name="status">
           <Radio.Group
             options={[
               {
@@ -159,32 +160,32 @@ let ProjectModal = (props: IProps) => {
         </Form.Item>
         <Row>
           <Col span={12}>
-            <Form.Item label="任务总数" name="taskCount">
+            <Form.Item required label="任务总数" name="taskCount">
               <InputNumber precision={0} min={0} />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label="已解决任务数" name="solvedTaskCount">
+            <Form.Item required label="已解决任务数" name="solvedTaskCount">
               <InputNumber precision={0} min={0} />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label="需求总数" name="demandCount">
+            <Form.Item required label="需求总数" name="demandCount">
               <InputNumber precision={0} min={0} />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label="已解决需求数" name="solvedDemandCount">
+            <Form.Item required label="已解决需求数" name="solvedDemandCount">
               <InputNumber precision={0} min={0} />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label="缺陷总数" name="bugCount">
+            <Form.Item required label="缺陷总数" name="bugCount">
               <InputNumber precision={0} min={0} />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label="已解决缺陷数" name="solvedBugCount">
+            <Form.Item required label="已解决缺陷数" name="solvedBugCount">
               <InputNumber precision={0} min={0} />
             </Form.Item>
           </Col>

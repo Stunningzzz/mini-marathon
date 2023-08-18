@@ -23,7 +23,7 @@ export const errorConfig: RequestConfig = {
       console.log('errorConfig :>> ', error);
       notification.open({
         type: 'error',
-        message: error.message,
+        message: error.response.data.desc,
       });
     },
   },
