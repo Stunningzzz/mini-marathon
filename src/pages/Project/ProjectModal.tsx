@@ -33,6 +33,8 @@ export const defaultProject: Partial<IProjectItem> = {
   demandCount: 0,
   solvedDemandCount: 0,
   bugCount: 0,
+  startDate: 0,
+  endDate: 0,
   solvedTaskCount: 0,
 };
 
@@ -67,11 +69,13 @@ let ProjectModal = (props: IProps) => {
 
   const handleSubmit = () => {
     const submitData = form.getFieldsValue();
-    form.setFieldsValue({
-      ...submitData,
-      startDate: submitData.rangeTime[0]?.valueOf(),
-      endDate: submitData.rangeTime[1]?.valueOf(),
-    });
+    const startDate = submitData.rangeTime[0].valueOf();
+    const startDate1 = submitData.rangeTime[0].format('YYYY-MM-DD HH:mm:ss');
+    const endDate = submitData.rangeTime[1].valueOf();
+    const endDate1 = submitData.rangeTime[1].format('YYYY-MM-DD HH:mm:ss');
+    const formData = { ...submitData, startDate, endDate };
+    console.log('formData :>> ', submitData, formData);
+    form.setFieldsValue(formData);
     form.submit();
   };
 
@@ -102,12 +106,12 @@ let ProjectModal = (props: IProps) => {
         initialValues={defaultProject}
         form={form}
         onFinish={(finishData) => {
+          const startDate = finishData.rangeTime[0].valueOf();
+          const endDate = finishData.rangeTime[1].valueOf();
           if (modalState === ProjectModalState.ADD) {
-            const startDate = finishData.rangeTime[0].valueOf();
-            const endDate = finishData.rangeTime[1].valueOf();
             runAddProject({ ...modalFormData, ...finishData, startDate, endDate });
           } else {
-            runUpdateProject({ ...modalFormData, ...finishData });
+            runUpdateProject({ ...modalFormData, ...finishData, startDate, endDate });
           }
         }}
       >
